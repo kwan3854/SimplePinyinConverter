@@ -106,7 +106,7 @@ nǚ, lǜ
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/SimplePinyinConverter.git
+git clone https://github.com/kwan3854/SimplePinyinConverter.git
 cd SimplePinyinConverter
 ```
 

@@ -139,28 +139,50 @@ class PinyinConverter(QMainWindow):
 
     def convert_to_pinyin(self):
         chinese_text = self.input_field.toPlainText()
-        if not chinese_text:  # 입력 텍스트가 없으면 변환하지 않음
+        if not chinese_text:
             return
 
         ignore_non_chinese = self.ignore_non_chinese_checkbox.isChecked()
 
         pinyin_result = pinyin(chinese_text, style=Style.TONE,
-                               errors='ignore' if ignore_non_chinese or self.pinyin_only_checkbox.isChecked() else 'default')
+                               errors='default')  # errors='default' ensures non-Chinese characters are returned
 
         start_symbol = self.start_symbol_input.text().strip()
         end_symbol = self.end_symbol_input.text().strip()
 
-        if self.pinyin_only_checkbox.isChecked():
-            pinyin_string = ' '.join([item[0] for item in pinyin_result if item])
-        else:
-            pinyin_string = ''
-            for ch, pin in zip(chinese_text, pinyin_result):
-                if pin:  # This means it's a Chinese character
-                    pinyin_string += f'{ch}{start_symbol}{pin[0]}{end_symbol}'
-                else:  # Non-Chinese characters
-                    pinyin_string += ch
+        pos = 0
+        output = ""
 
-        self.output_browser.setText(pinyin_string)
+        # pinyin_result example: [['Hello, '], ['nǐ'], ['hǎo'], ['!']]
+        # chinese_text = "Hello, 你好!"
+        for pin in pinyin_result:
+            token = pin[0]
+            # First, check if the token matches the substring at the current pos
+            if pos < len(chinese_text) and chinese_text[pos:pos + len(token)] == token:
+                # Non-Chinese chunk match
+                if not ignore_non_chinese:
+                    # Output non-Chinese characters
+                    output += token
+                # Move pos by the length of the matched token
+                pos += len(token)
+            else:
+                # Match failed: assume it's a single Chinese character
+                # Get the single character at pos
+                if pos < len(chinese_text):
+                    ch = chinese_text[pos]
+                    # Pinyin annotation for the Chinese character
+                    if self.pinyin_only_checkbox.isChecked():
+                        # Only Pinyin without Chinese character
+                        output += token + ' '
+                    else:
+                        # Chinese character (Pinyin)
+                        output += f'{ch}{start_symbol}{token}{end_symbol}'
+                    pos += 1
+                else:
+                    # Rare case where pos exceeds the string length
+                    break
+
+        self.output_browser.setText(output.strip())
 
     def convert_tones(self, text):
         output = []

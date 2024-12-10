@@ -117,28 +117,6 @@ nǚ, lǜ
 
 ---
 
-## Options Explained
-
-1. **Start Symbol**: Adds a symbol before each Pinyin syllable.
-    - Default: None.
-    - Example:
-        - Input: `你好`
-        - Option: Start Symbol = `[`
-        - Output: `你[nǐ]好[hǎo]`
-2. **End Symbol**: Adds a symbol after each Pinyin syllable.
-    - Default: None.
-    - Example:
-        - Input: `你好`
-        - Option: End Symbol = `]`
-        - Output: `你[nǐ]好[hǎo]`
-3. **Include Non-Chinese Characters**: Toggle whether non-Chinese characters appear in the output.
-    - Default: Enabled.
-    - Example:
-        - Input: `Hello, 你好!`
-        - Output: `Hello, 你(nǐ)好(hǎo)!`
-
----
-
 ## Running the Application from Source (Advanced Users)
 
 ### 1. Clone the Repository
